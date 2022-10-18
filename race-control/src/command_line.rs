@@ -5,8 +5,8 @@ use anyhow::{bail, Context, Result};
 use log::warn;
 use serialport::SerialPort;
 
-use crate::{mocks, Parser};
 use crate::analog_thresholds::AnalogDetectThresholds;
+use crate::{mocks, Parser};
 
 /// Cli option definition
 #[derive(Parser)]
@@ -30,7 +30,10 @@ pub struct Cli {
     pub test: bool,
 }
 
-pub fn get_sensor_calibration_data(calibration_file_path: &str, test_mode: bool) -> Result<AnalogDetectThresholds> {
+pub fn get_sensor_calibration_data(
+    calibration_file_path: &str,
+    test_mode: bool,
+) -> Result<AnalogDetectThresholds> {
     let thresholds = if let Ok(thresholds_txt) = fs::read_to_string(calibration_file_path) {
         toml::from_str(&thresholds_txt).context("Failed to parse thresholds from file contents")?
     } else {
@@ -45,11 +48,12 @@ pub fn get_sensor_calibration_data(calibration_file_path: &str, test_mode: bool)
     Ok(thresholds)
 }
 
-pub fn get_serial_port_connection(device_path: &str, test_mode: bool) -> Result<Box<dyn SerialPort>> {
+pub fn get_serial_port_connection(
+    device_path: &str,
+    test_mode: bool,
+) -> Result<Box<dyn SerialPort>> {
     let serial_port: Box<dyn SerialPort> = match serialport::new(device_path, 9600).open() {
-        Ok(port) => {
-            port
-        }
+        Ok(port) => port,
         Err(e) => {
             if test_mode {
                 warn!("Could not open serial port: {:?} with error: {:?}", device_path, e);

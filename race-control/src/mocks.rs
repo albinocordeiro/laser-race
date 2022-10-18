@@ -128,4 +128,3 @@ impl SerialPort for DummySerialPort {
         todo!()
     }
 }
-

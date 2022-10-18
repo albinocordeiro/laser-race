@@ -8,7 +8,7 @@ use serde_derive::Deserialize;
 use serialport::SerialPort;
 use toml;
 
-use crate::command_line::{Cli, get_sensor_calibration_data, get_serial_port_connection};
+use crate::command_line::{get_sensor_calibration_data, get_serial_port_connection, Cli};
 use crate::main_loop::MainLoop;
 
 mod analog_thresholds;
@@ -18,11 +18,13 @@ mod mocks;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    println!("
+    println!(
+        "
         ░█▀▄░█▀█░█▀▀░█▀▀░░░█▀▀░█▀█░█▀█░▀█▀░█▀▄░█▀█░█░░
         ░█▀▄░█▀█░█░░░█▀▀░░░█░░░█░█░█░█░░█░░█▀▄░█░█░█░░
         ░▀░▀░▀░▀░▀▀▀░▀▀▀░░░▀▀▀░▀▀▀░▀░▀░░▀░░▀░▀░▀▀▀░▀▀▀
-    ");
+    "
+    );
 
     let cli = Cli::parse();
 
@@ -39,7 +41,9 @@ async fn main() -> Result<()> {
     let serial_port = get_serial_port_connection(device_path, cli.test)?;
 
     let main_loop = MainLoop::new(thresholds, serial_port);
-    main_loop.run().context("Main loop interrupted with error")?;
+    main_loop
+        .run()
+        .context("Main loop interrupted with error")?;
 
     info!("Done...");
     Ok(())
