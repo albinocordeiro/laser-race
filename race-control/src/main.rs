@@ -1,15 +1,9 @@
-use std::fs;
-use std::path::PathBuf;
-
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result};
 use clap::Parser;
-use log::{info, warn};
-use serde_derive::Deserialize;
-use serialport::SerialPort;
-use toml;
+use log::info;
 
-use crate::command_line::{get_sensor_calibration_data, get_serial_port_connection, Cli};
-use crate::main_loop::MainLoop;
+use crate::command_line::{Cli, get_sensor_calibration_data, get_serial_port_connection};
+use crate::main_loop::run;
 
 mod analog_thresholds;
 mod command_line;
@@ -40,9 +34,7 @@ async fn main() -> Result<()> {
         .context("A device path must be provided. Follow instructions from the help menu (> race-control --help)")?;
     let serial_port = get_serial_port_connection(device_path, cli.test)?;
 
-    let main_loop = MainLoop::new(thresholds, serial_port);
-    main_loop
-        .run()
+    run(thresholds, serial_port)
         .context("Main loop interrupted with error")?;
 
     info!("Done...");

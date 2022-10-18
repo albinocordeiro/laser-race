@@ -2,11 +2,12 @@ use std::fs;
 use std::path::PathBuf;
 
 use anyhow::{bail, Context, Result};
+use clap::Parser;
 use log::warn;
 use serialport::SerialPort;
 
 use crate::analog_thresholds::AnalogDetectThresholds;
-use crate::{mocks, Parser};
+use crate::mocks;
 
 /// Cli option definition
 #[derive(Parser)]
