@@ -3,14 +3,15 @@ authors = ["Albino Cordeiro"]
 name = "race-control"
 version = "0.1.0"
 edition = "2021"
-description = "Tripwires signal management and race control"
+description = "Laser-race signal management and race control"
 repository = "https://github.com/albinocordeiro/race-control"
 license = "MIT OR Apache-2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-clap = "4.0.15"
+bevy = {version = "0.8.1"}
+clap = {version = "4.0.15", features = ["derive"]}
 serialport = "4.2.0"
 
 [dev-dependencies]
