@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.job.os }}
     strategy:
       matrix:
-        rust: [stable]
+        rust: [ stable ]
         job:
           - os: macos-latest
             os-name: macos

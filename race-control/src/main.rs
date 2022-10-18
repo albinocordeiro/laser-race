@@ -1,16 +1,19 @@
-use std::path::PathBuf;
 use std::fs;
+use std::path::PathBuf;
 
 use anyhow::{bail, Context, Result};
 use clap::Parser;
 use log::{info, warn};
+use serde_derive::Deserialize;
 use serialport::SerialPort;
-use serde_derive::{Deserialize};
 use toml;
+
 use crate::command_line::{Cli, get_sensor_calibration_data, get_serial_port_connection};
+use crate::main_loop::MainLoop;
 
 mod analog_thresholds;
 mod command_line;
+mod main_loop;
 mod mocks;
 
 #[tokio::main]
@@ -37,7 +40,7 @@ async fn main() -> Result<()> {
 
     let main_loop = MainLoop::new(thresholds, serial_port);
     main_loop.run().context("Main loop interrupted with error")?;
-    
+
     info!("Done...");
     Ok(())
 }

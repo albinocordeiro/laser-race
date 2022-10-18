@@ -20,7 +20,7 @@ impl MainLoop {
             .add_startup_system(setup)
             .add_state(AppState::CheckIn);
 
-        Self {app}
+        Self { app }
     }
     pub fn run(&self) {
         self.app.run();

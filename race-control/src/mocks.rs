@@ -1,12 +1,13 @@
 use std::io::{Read, Result, Write};
 use std::time::Duration;
+
 use serialport::{ClearBuffer, DataBits, FlowControl, Parity, SerialPort, StopBits};
 
 pub struct DummySerialPort {}
 
 impl DummySerialPort {
     pub fn new() -> Self {
-        DummySerialPort { }
+        DummySerialPort {}
     }
 }
 

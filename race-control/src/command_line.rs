@@ -1,8 +1,10 @@
 use std::fs;
 use std::path::PathBuf;
+
 use anyhow::{bail, Context, Result};
 use log::warn;
 use serialport::SerialPort;
+
 use crate::{mocks, Parser};
 use crate::analog_thresholds::AnalogDetectThresholds;
 
@@ -12,15 +14,15 @@ use crate::analog_thresholds::AnalogDetectThresholds;
 pub struct Cli {
     /// Path for the laser sensor signal calibration file
     /// File format example in the this repo
-    #[arg(short, long , value_name="CALIBRATION_FILE", default_value="SensorCalibration.toml")]
+    #[arg(short, long, value_name = "CALIBRATION_FILE", default_value = "SensorCalibration.toml")]
     pub calibration_file: PathBuf,
 
     /// Arduino device path
-    #[arg(short, long, value_name="ARDUINO_0_DEVICE_PATH", default_value="/dev/ttyACM0")]
+    #[arg(short, long, value_name = "ARDUINO_0_DEVICE_PATH", default_value = "/dev/ttyACM0")]
     pub device_path: PathBuf,
 
     /// Debug level
-    #[arg(short, long , action = clap::ArgAction::Count)]
+    #[arg(short, long, action = clap::ArgAction::Count)]
     pub level_of_debug_messages: u8,
 
     /// Test mode flag: In this mode the app can be tested without a connected Arduino device.
@@ -47,7 +49,7 @@ pub fn get_serial_port_connection(device_path: &str, test_mode: bool) -> Result<
     let serial_port: Box<dyn SerialPort> = match serialport::new(device_path, 9600).open() {
         Ok(port) => {
             port
-        },
+        }
         Err(e) => {
             if test_mode {
                 warn!("Could not open serial port: {:?} with error: {:?}", device_path, e);

@@ -14,40 +14,44 @@
 * run `cargo install race-control`
 
 ## Design
+
 ### Game Modes
+
 * **CheckIn**
-   * Show sensor statuses or just a SYSTEMS UP message if sensors seem all right, that is,
-     they are all activated on the sensor-high state. If there is a sensor on low state, return
-     message stating which sensor is low which gives the admin the option to just yank out the bad sensor/laser pair.
-  * If current state is SYSTEMS UP, a _Enter player name_ input prompt should be displayed.
-  * If a player name is entered transition to **Launch** mode.
+    * Show sensor statuses or just a SYSTEMS UP message if sensors seem all right, that is,
+      they are all activated on the sensor-high state. If there is a sensor on low state, return
+      message stating which sensor is low which gives the admin the option to just yank out the bad sensor/laser pair.
+    * If current state is SYSTEMS UP, a _Enter player name_ input prompt should be displayed.
+    * If a player name is entered transition to **Launch** mode.
 * **Launch**
-   * Start monitoring serial port (Arduino) for the _start signal_ (specific digital arduino GPIO). If start signal on the serial port
-     is detected or _L_ keyboard key is pressed then transition to **Play** mode.
-   * If _Esc_ keyboard key is pressed then transition back to **CheckIn** mode. 
+    * Start monitoring serial port (Arduino) for the _start signal_ (specific digital arduino GPIO). If start signal on
+      the serial port
+      is detected or _L_ keyboard key is pressed then transition to **Play** mode.
+    * If _Esc_ keyboard key is pressed then transition back to **CheckIn** mode.
 * **Play**
-   * Start monitoring serial port for laser sensor levels and detect hits based on thresholds in the calibration.toml file.
-     Also monitor for the _end signal_ or _D_ keyboard key.
-   * If _end signal_ or _D_ key is detected then, save player name, current time, hits, score transition to **GameOver** mode.
-   * Display player name, timer and hit count
-   * If _Esc_ is detected transition to **CheckIn** mode.
+    * Start monitoring serial port for laser sensor levels and detect hits based on thresholds in the calibration.toml
+      file.
+      Also monitor for the _end signal_ or _D_ keyboard key.
+    * If _end signal_ or _D_ key is detected then, save player name, current time, hits, score transition to **
+      GameOver** mode.
+    * Display player name, timer and hit count
+    * If _Esc_ is detected transition to **CheckIn** mode.
 * **GameOver**
-   * Display _Game Over_ message
-   * Player name and score
-   * Leader board
-   * Monitor for _Esc_, when detected transition to **CheckIn** mode.
+    * Display _Game Over_ message
+    * Player name and score
+    * Leader board
+    * Monitor for _Esc_, when detected transition to **CheckIn** mode.
 
 **Note:** at any point Ctrl+C will terminate the program
-
 
 ## License
 
 Licensed under either of
 
- * Apache License, Version 2.0
-   ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
- * MIT license
-   ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+* Apache License, Version 2.0
+  ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+* MIT license
+  ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
 
 at your option.
 
