@@ -1,12 +1,15 @@
 use std::path::PathBuf;
-use std::fs::read_to_string;
-use std::ptr::read;
+use std::fs;
 
-use anyhow::{Context, Result};
+use anyhow::{bail, Context, Result};
 use clap::Parser;
 use log::{debug, error, info, warn};
+use serialport::SerialPort;
 use serde_derive::{Deserialize};
 use toml;
+
+mod mocks;
+
 
 /// Cli option definition
 #[derive(Parser)]
@@ -24,14 +27,18 @@ struct Cli {
     /// Debug level
     #[arg(short, long , action = clap::ArgAction::Count)]
     debug: u8,
+
+    /// Test mode flag
+    #[arg(short, long)]
+    test: bool,
 }
 
 #[derive(Deserialize)]
 struct AnalogDetectThresholds {
-    A0_low: u8,
-    A0_high: u8,
-    A1_low: u8,
-    A1_high: u8,
+    a0_low: u8,
+    a0_high: u8,
+    a1_low: u8,
+    a1_high: u8,
     A2_low: u8,
     A2_high: u8,
     A3_low: u8,
@@ -45,10 +52,10 @@ struct AnalogDetectThresholds {
 impl Default for AnalogDetectThresholds {
     fn default() -> Self {
         AnalogDetectThresholds {
-            A0_low: 0,
-            A0_high: 0,
-            A1_low: 0,
-            A1_high: 0,
+            a0_low: 0,
+            a0_high: 0,
+            a1_low: 0,
+            a1_high: 0,
             A2_low: 0,
             A2_high: 0,
             A3_low: 0,
@@ -60,6 +67,7 @@ impl Default for AnalogDetectThresholds {
         }
     }
 }
+
 #[tokio::main]
 async fn main() -> Result<()> {
     println!("
@@ -69,14 +77,33 @@ async fn main() -> Result<()> {
     ");
 
     let cli = Cli::parse();
-    let thresholds = if let Some(thresholds_txt) = read_to_string(&cli.calibration_file) {
-        toml::from_str(&thresholds_txt).context("Failed to parse thresholds from file")?
+
+    // Load sensor calibration data
+    let thresholds = if let Ok(thresholds_txt) = fs::read_to_string(&cli.calibration_file.as_path()) {
+        toml::from_str(&thresholds_txt).context("Failed to parse thresholds from file contents")?
     } else {
-        AnalogDetectThresholds::default()
+        if cli.test {
+            warn!("Could not read sensor calibration file: {:?}.", cli.calibration_file.as_path());
+            AnalogDetectThresholds::default()
+        } else {
+            bail!("Could not read sensor calibration file: {:?}.", cli.calibration_file.as_path());
+        }
     };
 
-
-
+    // Connect to serial port
+    let serial_port: Box<dyn SerialPort> = match SerialPort::new(cli.device_path.to_str(), 9600).open() {
+        Ok(port) => {
+            port
+        },
+        Err(e) => {
+            if cli.test {
+                warn!("Could not open serial port: {:?} with error: {:?}", cli.device_path.as_path(), e);
+                Box::new(mocks::DummySerialPort::new())
+            } else {
+                bail!("Could not open serial port: {:?} with error: {:?}", cli.device_path.as_path(), e);
+            }
+        }
+    };
 }
 
 
