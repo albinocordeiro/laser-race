@@ -1,6 +1,8 @@
+use bevy::prelude::Resource;
 use serde_derive::Deserialize;
+use bevy::ecs::component::Component;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Resource, Debug, Component, PartialEq, Eq, Clone, Copy)]
 pub struct AnalogDetectThresholds {
     a0_low: u8,
     a0_high: u8,

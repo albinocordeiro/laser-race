@@ -14,6 +14,8 @@
 * run `cargo install race-control`
 
 ## Design
+### Color scheme
+https://colordesigner.io/#083359-BF930F-BF820F-D9C893-A62F14
 
 ### Game Modes
 

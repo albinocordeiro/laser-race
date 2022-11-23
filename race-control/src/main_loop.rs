@@ -1,31 +1,30 @@
-use std::sync::Arc;
-
 use anyhow::Result;
 use bevy::prelude::*;
-use serialport::SerialPort;
 
 use crate::analog_thresholds::AnalogDetectThresholds;
+use crate::checkin_plugin::CheckinPlugin;
+use crate::common::AppState;
+use crate::splash_plugin::SplashPlugin;
 
-#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
-enum AppState {
-    CheckIn,
-    Launch,
-    Play,
-    GameOver,
-}
 
-pub fn run(thresholds: AnalogDetectThresholds, serial_port: Box<dyn SerialPort>) -> Result<()> {
+#[derive(Resource, Debug, Component, PartialEq, Eq, Clone, Deref)]
+struct DevicePath(String);
+
+pub fn run(thresholds: AnalogDetectThresholds, device_path: &str) -> Result<()> {
     App::new()
         .add_plugins(DefaultPlugins)
         .insert_resource(thresholds)
-        .insert_resource(Arc::new(serial_port))
+        .insert_resource(DevicePath(device_path.to_string()))
         .add_startup_system(setup)
-        .add_state(AppState::CheckIn)
+        .add_state(AppState::Splash)
+        .add_plugin(SplashPlugin)
+        .add_plugin(CheckinPlugin)
         .run();
 
     Ok(())
 }
 
 fn setup(mut commands: Commands) {
-    commands.spawn_bundle(Camera2dBundle::default());
+    commands.spawn(Camera2dBundle::default());
 }
+
