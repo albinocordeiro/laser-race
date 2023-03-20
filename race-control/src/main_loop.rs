@@ -16,7 +16,7 @@ pub fn run(thresholds: AnalogDetectThresholds, device_path: &str) -> Result<()> 
         .insert_resource(thresholds)
         .insert_resource(DevicePath(device_path.to_string()))
         .add_startup_system(setup)
-        .add_state(AppState::Splash)
+        .add_state::<AppState>()
         .add_plugin(SplashPlugin)
         .add_plugin(CheckinPlugin)
         .run();

@@ -1,7 +1,7 @@
-use bevy::prelude::{Color, Commands, Component, DespawnRecursiveExt, Entity, Query, Resource, TextStyle, With};
+use bevy::prelude::{Color, Commands, Component, DespawnRecursiveExt, Entity, Query, Resource, States, With};
 
-#[derive(Resource, Debug, Component, PartialEq, Eq, Clone, Copy)]
-pub struct PlayerName(String);
+#[derive(Resource, Debug, Component, PartialEq, Eq, Clone)]
+pub struct PlayerName(pub String);
 
 pub struct ColorScheme{
     pub bg: Color,
@@ -23,8 +23,9 @@ impl ColorScheme {
     }
 }
 
-#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash, States, Default)]
 pub enum AppState {
+    #[default]
     Splash,
     CheckIn,
     Launch,

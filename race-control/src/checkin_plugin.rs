@@ -1,13 +1,8 @@
-use bevy::app::App;
-use bevy::prelude::{AlignItems, AssetServer, BuildChildren, ButtonBundle, Color, Commands,
-                    default, Entity, FlexDirection, NodeBundle, Plugin, Res, Resource,
-                    Size, Style, SystemSet, TextBundle, TextStyle, UiRect, Val,
-                    Component};
-use bevy::ui::JustifyContent;
+use bevy::prelude::*;
 use crate::common::{AppState, ColorScheme, PlayerName};
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
-pub enum NameInputState{
+pub enum NameInputState {
     NotReadyToSubmit,
     ReadyToSubmit,
 }
@@ -21,10 +16,9 @@ pub struct CheckinPlugin;
 impl Plugin for CheckinPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_state(NameInputState::NotReadyToSubmit)
+            .add_state::<AppState>()
             .insert_resource(PlayerName(String::new()))
-            .add_system_set(SystemSet::on_enter(AppState::CheckIn)
-                .with_system(setup_checkin_menu));
+            .add_system(setup_checkin_menu.in_schedule(OnEnter(AppState::CheckIn)));
     }
 }
 
